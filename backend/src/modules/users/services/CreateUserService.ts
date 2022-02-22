@@ -4,7 +4,7 @@ import AppError from "@shared/errors/AppError";
 import IUsersRepository from "../repositories/IUsersRespository";
 import IHashProvider from "../providers/HashProvider/models/IHashProvider";
 
-interface Request {
+interface IRequest {
   name: string;
   email: string;
   password: string;
@@ -20,7 +20,7 @@ class CreateUserService {
     private hashProvider: IHashProvider
   ) {}
 
-  public async execute({ name, email, password }: Request): Promise<User> {
+  public async execute({ name, email, password }: IRequest): Promise<User> {
     const checkUserExists = await this.usersRepository.findByEmail(email);
 
     if (checkUserExists) {

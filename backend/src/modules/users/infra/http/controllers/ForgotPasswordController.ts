@@ -5,8 +5,7 @@ import RecoveryPasswordEmailService from "@modules/users/services/RecoveryPasswo
 
 export default class ForgotPasswordController {
   public async create(request: Request, response: Response): Promise<Response> {
-    const email = request.body;
-
+    const { email } = request.body;
     const recoveryPasswordEmailService = container.resolve(
       RecoveryPasswordEmailService
     );
