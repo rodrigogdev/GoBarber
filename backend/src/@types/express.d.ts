@@ -8,3 +8,4 @@ declare namespace Express {
     };
   }
 }
+declare module "mongodb";
