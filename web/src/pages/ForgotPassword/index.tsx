@@ -1,6 +1,6 @@
-import React, { useCallback, useRef } from "react";
-import { FiLogIn, FiMail, FiLock } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useCallback, useRef, useState } from "react";
+import { FiLogIn, FiMail } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import { Form } from "@unform/web";
 import * as Yup from "yup";
 
@@ -11,38 +11,46 @@ import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { Container, Content, Background, AnimationContainer } from "./styles";
 import getValidationErros from "../../utils/getValidationErrors";
-import { useAuth } from "../../hooks/Auth";
 import { useToast } from "../../hooks/Toast";
+import api from "../../services/api";
 
-interface SignInFormData {
+interface ForgotPasswordFormData {
   email: string;
-  password: string;
 }
 
-function SignIn() {
+function ForgotPassword() {
+  const [loading, setLoading] = useState(false);
   const formRef = useRef<FormHandles>(null);
 
-  const { signIn } = useAuth();
   const { addToast } = useToast();
-  const navigate = useNavigate();
 
   const handleSubmit = useCallback(
-    async (data: SignInFormData) => {
+    async (data: ForgotPasswordFormData) => {
       try {
+        setLoading(true);
+
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
           email: Yup.string()
             .required("E-mail obrigatório")
             .email("Digite um e-mail válido"),
-          password: Yup.string().required("Senha obrigatória"),
         });
 
         await schema.validate(data, { abortEarly: false });
 
-        await signIn({ email: data.email, password: data.password });
+        // recuperacao de senha
 
-        navigate("/dashboard");
+        await api.post("/password/forgot", {
+          email: data.email,
+        });
+
+        addToast({
+          type: "success",
+          title: "Recovery Password Email send.",
+          description:
+            "We send an email to confirm the password recovery. Check your mail box",
+        });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErros(err as Yup.ValidationError);
@@ -53,12 +61,15 @@ function SignIn() {
 
         addToast({
           type: "error",
-          title: "Erro na autenticação",
-          description: "Ocorreu um erro ao fazer login, cheque as credenciais.",
+          title: "Erro na recuperação de senha",
+          description:
+            "Ocorreu um erro ao tentar recuperar a senha, tente novamente.",
         });
+      } finally {
+        setLoading(false);
       }
     },
-    [signIn, addToast, navigate],
+    [addToast],
   );
 
   return (
@@ -67,24 +78,17 @@ function SignIn() {
         <AnimationContainer>
           <img src={logoImg} alt="GoBarber" />
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <h1>Faça seu Logon</h1>
+            <h1>Recuperar senha</h1>
 
             <Input name="email" icon={FiMail} placeholder="E-mail" />
 
-            <Input
-              name="password"
-              icon={FiLock}
-              type="password"
-              placeholder="Senha"
-            />
-
-            <Button type="submit">Entrar</Button>
-
-            <Link to="/forgot-password">Esqueci minha senha</Link>
+            <Button loading={loading} type="submit">
+              Recuperar
+            </Button>
           </Form>
-          <Link to="/signup">
+          <Link to="/">
             <FiLogIn />
-            Criar conta
+            Back to Login
           </Link>
         </AnimationContainer>
       </Content>
@@ -94,4 +98,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default ForgotPassword;

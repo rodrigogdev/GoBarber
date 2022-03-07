@@ -6,6 +6,8 @@ import { PrivateRoute } from "./route";
 import SignIn from "../pages/Signin";
 import SignUp from "../pages/Signup";
 import Dashboard from "../pages/Dashboard";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 export const Routers: React.FC = () => {
   return (
@@ -24,6 +26,24 @@ export const Routers: React.FC = () => {
         element={
           <PrivateRoute redirectTo="/">
             <SignUp />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/forgot-password"
+        element={
+          <PrivateRoute redirectTo="/">
+            <ForgotPassword />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/reset-password"
+        element={
+          <PrivateRoute redirectTo="/">
+            <ResetPassword />
           </PrivateRoute>
         }
       />
