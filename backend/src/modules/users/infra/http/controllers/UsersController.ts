@@ -8,11 +8,13 @@ export default class UsersController {
     const { name, email, password } = request.body;
 
     const createUser = container.resolve(CreateUserService);
+    const avatarFileName = request.file.filename;
 
     const user = await createUser.execute({
       name,
       email,
       password,
+      avatarFileName,
     });
     return response.json(classToClass(user));
   }

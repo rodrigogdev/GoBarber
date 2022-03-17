@@ -33,9 +33,9 @@ function SignIn() {
 
         const schema = Yup.object().shape({
           email: Yup.string()
-            .required("E-mail obrigatório")
-            .email("Digite um e-mail válido"),
-          password: Yup.string().required("Senha obrigatória"),
+            .required("Required e-mail")
+            .email("Enter an valid e-mail address."),
+          password: Yup.string().required("Required password."),
         });
 
         await schema.validate(data, { abortEarly: false });
@@ -53,8 +53,9 @@ function SignIn() {
 
         addToast({
           type: "error",
-          title: "Erro na autenticação",
-          description: "Ocorreu um erro ao fazer login, cheque as credenciais.",
+          title: "Authenticate error.",
+          description:
+            "There is an error trying to authenticate, check your credentials.",
         });
       }
     },
@@ -67,24 +68,24 @@ function SignIn() {
         <AnimationContainer>
           <img src={logoImg} alt="GoBarber" />
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <h1>Faça seu Logon</h1>
+            <h1>Logon</h1>
 
-            <Input name="email" icon={FiMail} placeholder="E-mail" />
+            <Input name="email" icon={FiMail} placeholder="e-mail" />
 
             <Input
               name="password"
               icon={FiLock}
               type="password"
-              placeholder="Senha"
+              placeholder="password"
             />
 
-            <Button type="submit">Entrar</Button>
+            <Button type="submit">Login</Button>
 
-            <Link to="/forgot-password">Esqueci minha senha</Link>
+            <Link to="/forgot-password">Forgot my password</Link>
           </Form>
           <Link to="/signup">
             <FiLogIn />
-            Criar conta
+            Create Account
           </Link>
         </AnimationContainer>
       </Content>
