@@ -10,9 +10,18 @@
 
 This is an application to profissional hairdressers to manage their day of work, where their customers can schedule appointments, so they can see in his dashboard, all the customers they will serve that day.
 
-## :fire: Application Live Demo
+## :fire: About the Application
 
-You can see a live demo of this project HERE.
+### :sunglasses: Features
+
+Full User signup interface,
+Reset password email for user, using Amazon SES
+Update user profile, with avatar image storaged on Amazon S3
+Cache memory managing with redis
+Better user experience with message Toasts
+User Notifications, storing using mongoDB
+{...}
+
 
 ### :rocket: Used Technologies
 
