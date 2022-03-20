@@ -14,13 +14,13 @@ This is an application to profissional hairdressers to manage their day of work,
 
 ### :sunglasses: Features
 
-Full User signup interface,
-Reset password email for user, using Amazon SES
-Update user profile, with avatar image storaged on Amazon S3
-Cache memory managing with redis
-Better user experience with message Toasts
-User Notifications, storing using mongoDB
-{...}
+- Full User signup interface,
+- Reset password email for user, using Amazon SES
+- Update user profile, with avatar image storaged on Amazon S3
+- Cache memory managing with redis
+- Better user experience with message Toasts
+- User Notifications, storing using mongoDB
+- {...}
 
 
 ### :rocket: Used Technologies
