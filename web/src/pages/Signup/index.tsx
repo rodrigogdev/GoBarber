@@ -1,6 +1,13 @@
 /* eslint-disable react/jsx-no-bind */
-import React, { useCallback, useRef } from "react";
-import { FiMail, FiLock, FiUser, FiArrowLeft } from "react-icons/fi";
+import React, { ChangeEvent, useCallback, useRef, useState } from "react";
+import {
+  FiMail,
+  FiLock,
+  FiUser,
+  FiArrowLeft,
+  FiImage,
+  FiUpload,
+} from "react-icons/fi";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/web";
 import * as Yup from "yup";
@@ -19,12 +26,24 @@ interface SignUpFormData {
   name: string;
   email: string;
   password: string;
+  avatar: FormData;
 }
 
 function SignUp() {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
   const navigate = useNavigate();
+
+  const [image, setImage] = useState<FormData>();
+
+  const handleChangeAvatar = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const data = new FormData();
+
+      data.append("avatar", e.target.files[0]);
+      setImage(data);
+    }
+  }, []);
 
   const handleSubmit = useCallback(
     async (data: SignUpFormData) => {
@@ -41,7 +60,11 @@ function SignUp() {
 
         await schema.validate(data, { abortEarly: false });
 
-        await api.post("/users", data);
+        image?.append("name", data.name);
+        image?.append("email", data.email);
+        image?.append("password", data.password);
+
+        await api.post("/users", image);
 
         navigate("/");
 
@@ -65,7 +88,7 @@ function SignUp() {
         });
       }
     },
-    [addToast, navigate],
+    [addToast, navigate, image],
   );
   return (
     <Container>
@@ -74,7 +97,11 @@ function SignUp() {
         <AnimationContainer>
           <img src={logoImg} alt="GoBarber" />
 
-          <Form ref={formRef} onSubmit={handleSubmit}>
+          <Form
+            encType="multipart/form-data"
+            ref={formRef}
+            onSubmit={handleSubmit}
+          >
             <h1>Faça seu Cadastro</h1>
 
             <Input name="name" icon={FiUser} placeholder="Nome" />
@@ -85,6 +112,16 @@ function SignUp() {
               icon={FiLock}
               type="password"
               placeholder="Senha"
+            />
+
+            <Input
+              id="oi"
+              name="avatar"
+              icon={FiImage}
+              type="file"
+              accept="image/*"
+              onChange={handleChangeAvatar}
+              placeholder="Picture"
             />
 
             <Button type="submit">Cadastrar</Button>

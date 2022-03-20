@@ -138,8 +138,9 @@ const Dashboard: React.FC = () => {
             <img src={user.avatar_url} alt={user.name} />
             <div>
               <span>Welcome</span>
+              <strong>{user.name}</strong>
               <Link to="/profile">
-                <strong>{user.name}</strong>
+                <span>Edit Profile</span>
               </Link>
             </div>
           </Profile>

@@ -36,6 +36,12 @@ export const Profile = styled.div`
   align-items: center;
   margin-left: 80px;
 
+  strong {
+    font-size: 25px;
+    margin: 5px;
+    color: #ff9000;
+  }
+
   img {
     width: 56px;
     height: 56px;

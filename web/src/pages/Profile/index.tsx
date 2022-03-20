@@ -119,7 +119,7 @@ function Profile() {
         });
       }
     },
-    [addToast, navigate],
+    [addToast, navigate, updateUser],
   );
   return (
     <Container>
