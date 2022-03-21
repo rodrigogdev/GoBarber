@@ -20,12 +20,13 @@ This is an application to profissional hairdressers to manage their day of work,
 - Cache memory managing with redis
 - Better user experience with message Toasts
 - User Notifications, storing using mongoDB
+- Unit Testing with Jest
 - {...}
 
 
 ### :rocket: Used Technologies
 
-Some of the technologies used in this project:
+Some of the technologies used in this project are:
 
 - [NodeJS](https://nodejs.org/en/)
 - [ReactJS](https://pt-br.reactjs.org/)
@@ -33,6 +34,7 @@ Some of the technologies used in this project:
 - [JWT](https://jwt.io/)
 - [Yup](https://github.com/jquense/yup)
 - [Styled-Components](https://styled-components.com/)
+- [Jest](https://jestjs.io/)
 {...}
 
 ## :zap: Running the Project
