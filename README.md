@@ -61,7 +61,7 @@ $ npm install && npm run typeorm migration:run && npm run dev:server
 $ cd web
 $ npm install && npm start
 ```
-### :memo: Licença
+### :memo: License
 
 This project was developed under MIT licence. Read the file [LICENSE](LICENSE.md) to know more about it.
 
