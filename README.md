@@ -52,7 +52,6 @@ $ cd backend
 # PostgreSQL as database, just have the docker installed on your computer.
 $ docker-compose up -d
 
-# Rodando as migrations para o banco de dados e iniciando o projeto
 # Run the migrations to build the tables on database
 $ npm install && npm run typeorm migration:run && npm run dev:server
 ```
