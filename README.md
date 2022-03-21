@@ -43,7 +43,7 @@ Some of the technologies used in this project are:
 $ git clone https://github.com/rodrigogdev/GoBarber.git
 $ cd GoBarber
 ```
-#### Iniciando a API
+#### Starting the API
 ```sh
 $ cd backend
 
@@ -56,7 +56,7 @@ $ docker-compose up -d
 $ npm install && npm run typeorm migration:run && npm run dev:server
 ```
 
-#### Iniciando o Frontend
+#### Starting the web
 ```sh
 $ cd web
 $ npm install && npm start
