@@ -42,8 +42,15 @@ class UsersRepository implements IUsersRepository {
     email,
     password,
     avatar,
+    user_type,
   }: ICreateUserDTO): Promise<User> {
-    const user = this.ormRepository.create({ name, email, password, avatar });
+    const user = this.ormRepository.create({
+      name,
+      email,
+      password,
+      avatar,
+      user_type,
+    });
 
     await this.ormRepository.save(user);
 

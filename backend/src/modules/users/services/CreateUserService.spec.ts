@@ -1,5 +1,6 @@
 import FakeUsersRepository from "@modules/users/repositories/fakes/FakeUsersRepository";
 import FakeCacheProvider from "@shared/container/providers/CacheProvider/fakes/FakeCacheProvider";
+import FakeStorageProvider from "@shared/container/providers/StorageProvider/fakes/FakeStorageProvider";
 import AppError from "@shared/errors/AppError";
 import FakeHashProvider from "../providers/HashProvider/fakes/FakeHashProvider";
 import CreateUserService from "./CreateUserService";
@@ -8,16 +9,20 @@ let fakeUsersRepository: FakeUsersRepository;
 let fakeHashProvider: FakeHashProvider;
 let createUser: CreateUserService;
 let fakeCacheProvider: FakeCacheProvider;
+let fakeStorageProvider: FakeStorageProvider;
 
 describe("CreateUser", () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
     fakeHashProvider = new FakeHashProvider();
     fakeCacheProvider = new FakeCacheProvider();
+    fakeStorageProvider = new FakeStorageProvider();
+
     createUser = new CreateUserService(
       fakeUsersRepository,
       fakeHashProvider,
-      fakeCacheProvider
+      fakeCacheProvider,
+      fakeStorageProvider
     );
   });
   it("Should be able to create a new user", async () => {
@@ -25,6 +30,8 @@ describe("CreateUser", () => {
       name: "John Doe",
       email: "johndoe@example.com",
       password: "123123123",
+      avatarFileName: "picture.jpg",
+      user_type: "client",
     });
 
     expect(user).toHaveProperty("id");
@@ -35,6 +42,8 @@ describe("CreateUser", () => {
       name: "John Doe",
       email: "johndoe@example.com",
       password: "123123123",
+      avatarFileName: "picture.jpg",
+      user_type: "client",
     });
 
     await expect(
@@ -42,6 +51,8 @@ describe("CreateUser", () => {
         name: "John Doe",
         email: "johndoe@example.com",
         password: "123123123",
+        avatarFileName: "picture.jpg",
+        user_type: "client",
       })
     ).rejects.toBeInstanceOf(AppError);
   });

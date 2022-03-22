@@ -22,6 +22,8 @@ describe("UpdateUSerAvatar", () => {
       name: "John Doe",
       email: "johndoe@example.com",
       password: "123456",
+      avatar: "picture.jpg",
+      user_type: "client",
     });
 
     await updateUSerAvatar.execute({
@@ -48,6 +50,8 @@ describe("UpdateUSerAvatar", () => {
       name: "John Doe",
       email: "johndoe@example.com",
       password: "123456",
+      avatar: "picture.jpg",
+      user_type: "client",
     });
 
     await updateUSerAvatar.execute({

@@ -24,6 +24,8 @@ describe("UpdateProfile", () => {
       name: "John Doe",
       email: "johndoe@example.com",
       password: "123456",
+      avatar: "picture.jpg",
+      user_type: "client",
     });
 
     const updatedUser = await updateProfile.execute({
@@ -51,12 +53,16 @@ describe("UpdateProfile", () => {
       name: "John Doe",
       email: "johndoe@example.com",
       password: "123456",
+      avatar: "picture.jpg",
+      user_type: "client",
     });
 
     const user = await fakeUsersRepository.create({
       name: "Test",
       email: "test@example.com",
       password: "123456",
+      avatar: "picture.jpg",
+      user_type: "client",
     });
 
     await expect(
@@ -73,6 +79,8 @@ describe("UpdateProfile", () => {
       name: "John Doe",
       email: "johndoe@example.com",
       password: "123456",
+      avatar: "picture.jpg",
+      user_type: "client",
     });
 
     const updatedUser = await updateProfile.execute({
@@ -91,6 +99,8 @@ describe("UpdateProfile", () => {
       name: "John Doe",
       email: "johndoe@example.com",
       password: "123456",
+      avatar: "picture.jpg",
+      user_type: "client",
     });
 
     await expect(
@@ -108,6 +118,8 @@ describe("UpdateProfile", () => {
       name: "John Doe",
       email: "johndoe@example.com",
       password: "123456",
+      avatar: "picture.jpg",
+      user_type: "client",
     });
 
     await expect(

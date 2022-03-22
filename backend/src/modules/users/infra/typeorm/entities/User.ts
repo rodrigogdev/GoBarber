@@ -5,8 +5,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
-import uploadConfig from "@config/upload";
 import { Exclude, Expose } from "class-transformer";
+import uploadConfig from "../../../../../config/upload";
 
 @Entity("users")
 class User {
@@ -18,6 +18,9 @@ class User {
 
   @Column()
   email: string;
+
+  @Column()
+  user_type: string;
 
   @Column()
   @Exclude()

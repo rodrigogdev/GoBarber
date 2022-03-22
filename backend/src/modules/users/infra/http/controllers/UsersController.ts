@@ -5,7 +5,7 @@ import { container } from "tsyringe";
 
 export default class UsersController {
   public async create(request: Request, response: Response): Promise<Response> {
-    const { name, email, password } = request.body;
+    const { name, email, password, user_type } = request.body;
 
     const createUser = container.resolve(CreateUserService);
     const avatarFileName = request.file.filename;
@@ -15,7 +15,9 @@ export default class UsersController {
       email,
       password,
       avatarFileName,
+      user_type,
     });
+
     return response.json(classToClass(user));
   }
 }

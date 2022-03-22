@@ -1,13 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 import React, { ChangeEvent, useCallback, useRef, useState } from "react";
-import {
-  FiMail,
-  FiLock,
-  FiUser,
-  FiArrowLeft,
-  FiImage,
-  FiUpload,
-} from "react-icons/fi";
+import { FiMail, FiLock, FiUser, FiArrowLeft, FiImage } from "react-icons/fi";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/web";
 import * as Yup from "yup";
@@ -26,6 +19,7 @@ interface SignUpFormData {
   name: string;
   email: string;
   password: string;
+  user_type: string;
   avatar: FormData;
 }
 
@@ -35,6 +29,11 @@ function SignUp() {
   const navigate = useNavigate();
 
   const [image, setImage] = useState<FormData>();
+  const [type, setType] = useState<string>("");
+
+  const handleChangeType = (e: ChangeEvent<HTMLInputElement>) => {
+    setType(e.target.value);
+  };
 
   const handleChangeAvatar = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -63,6 +62,7 @@ function SignUp() {
         image?.append("name", data.name);
         image?.append("email", data.email);
         image?.append("password", data.password);
+        image?.append("user_type", type);
 
         await api.post("/users", image);
 
@@ -88,7 +88,7 @@ function SignUp() {
         });
       }
     },
-    [addToast, navigate, image],
+    [addToast, navigate, image, type],
   );
   return (
     <Container>
@@ -96,6 +96,28 @@ function SignUp() {
       <Content>
         <AnimationContainer>
           <img src={logoImg} alt="GoBarber" />
+
+          <div onChange={handleChangeType}>
+            <label htmlFor="rbutton">
+              <input
+                id="rbutton"
+                type="radio"
+                name="nametype"
+                value="client"
+                defaultChecked
+              />
+              <i>Client</i>
+            </label>
+            <label htmlFor="rbutton2">
+              <input
+                id="rbutton2"
+                type="radio"
+                name="nametype"
+                value="provider"
+              />
+              <i>Provider</i>
+            </label>
+          </div>
 
           <Form
             encType="multipart/form-data"

@@ -1,13 +1,12 @@
 import { MigrationInterface, QueryRunner, TableColumn } from "typeorm";
 
-export default class AddAvatarFieldToUsers1642107587366
-  implements MigrationInterface
-{
+// eslint-disable-next-line import/prefer-default-export
+export class AddUserTypeToUsers1647966228243 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.addColumn(
       "users",
       new TableColumn({
-        name: "avatar",
+        name: "user_type",
         type: "varchar",
         isNullable: true,
       })
@@ -15,6 +14,6 @@ export default class AddAvatarFieldToUsers1642107587366
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropColumn("users", "avatar");
+    await queryRunner.dropColumn("users", "user_type");
   }
 }

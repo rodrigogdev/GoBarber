@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>23/23</span>
+                <span class='fraction'>28/28</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
@@ -111,7 +111,21 @@
 <a name='L46'></a><a href='#L46'>46</a>
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -125,6 +139,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -136,8 +153,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -145,8 +170,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -163,6 +191,7 @@
 import User from "@modules/users/infra/typeorm/entities/User";
 import AppError from "@shared/errors/AppError";
 import ICacheProvider from "@shared/container/providers/CacheProvider/models/ICacheProvider";
+import IStorageProvider from "@shared/container/providers/StorageProvider/models/IStorageProvider";
 import IUsersRepository from "../repositories/IUsersRespository";
 import IHashProvider from "../providers/HashProvider/models/IHashProvider";
 &nbsp;
@@ -170,6 +199,8 @@ interface IRequest {
   name: string;
   email: string;
   password: string;
+  avatarFileName: string;
+  user_type: string;
 }
 &nbsp;
 @injectable()
@@ -182,10 +213,18 @@ class CreateUserService {
     private hashProvider: IHashProvider,
 &nbsp;
     @inject("CacheProvider")
-    private cacheProvider: ICacheProvider
+    private cacheProvider: ICacheProvider,
+&nbsp;
+    @inject("StorageProvider") private storageProvider: IStorageProvider
   ) {}
 &nbsp;
-  public async execute({ name, email, password }: IRequest): Promise&lt;User&gt; {
+  public async execute({
+    name,
+    email,
+    password,
+    avatarFileName,
+    user_type,
+  }: IRequest): Promise&lt;User&gt; {
     const checkUserExists = await this.usersRepository.findByEmail(email);
 &nbsp;
     if (checkUserExists) {
@@ -193,11 +232,14 @@ class CreateUserService {
     }
 &nbsp;
     const hashedPassword = await this.hashProvider.generateHash(password);
+    const avatar = await this.storageProvider.saveFile(avatarFileName);
 &nbsp;
     const user = await this.usersRepository.create({
       name,
       email,
       password: hashedPassword,
+      avatar,
+      user_type,
     });
 &nbsp;
     await this.cacheProvider.invalidatePrefix("providers-list");
@@ -214,7 +256,7 @@ export default CreateUserService;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Thu Mar 17 2022 15:42:07 GMT-0300 (Brasilia Standard Time)
+                at Tue Mar 22 2022 14:23:23 GMT-0300 (Brasilia Standard Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>
