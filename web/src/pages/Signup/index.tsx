@@ -29,8 +29,9 @@ function SignUp() {
   const navigate = useNavigate();
 
   const [image, setImage] = useState<FormData>();
-  const [type, setType] = useState<string>("");
-  const [isFocusedOne, setIsFocusedOne] = useState(false);
+  const [type, setType] = useState<string>("client");
+  const [loading, setLoading] = useState(false);
+  const [isFocusedOne, setIsFocusedOne] = useState(true);
   const [isFocusedTwo, setIsFocusedTwo] = useState(false);
 
   const handleChangeType = (e: ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +60,7 @@ function SignUp() {
   const handleSubmit = useCallback(
     async (data: SignUpFormData) => {
       try {
+        setLoading(true);
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
@@ -90,6 +92,7 @@ function SignUp() {
           const errors = getValidationErros(err as Yup.ValidationError);
           formRef.current?.setErrors(errors);
 
+          setLoading(false);
           return;
         }
 
@@ -163,7 +166,9 @@ function SignUp() {
               placeholder="Picture"
             />
 
-            <Button type="submit">Cadastrar</Button>
+            <Button loading={loading} type="submit">
+              Cadastrar
+            </Button>
           </Form>
 
           <Link to="/">

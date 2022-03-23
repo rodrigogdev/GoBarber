@@ -84,6 +84,7 @@ export const AnimationContainer = styled.div<AnimationContainerProps>`
       margin-left: 10px;
       padding: 3px 5px;
       font-family: "Roboto Slab", serif;
+      cursor: pointer;
     }
   }
 
