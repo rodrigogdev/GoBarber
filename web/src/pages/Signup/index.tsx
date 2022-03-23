@@ -30,10 +30,22 @@ function SignUp() {
 
   const [image, setImage] = useState<FormData>();
   const [type, setType] = useState<string>("");
+  const [isFocusedOne, setIsFocusedOne] = useState(false);
+  const [isFocusedTwo, setIsFocusedTwo] = useState(false);
 
   const handleChangeType = (e: ChangeEvent<HTMLInputElement>) => {
     setType(e.target.value);
   };
+
+  const handleFocusedOne = useCallback(() => {
+    setIsFocusedOne(true);
+    setIsFocusedTwo(false);
+  }, []);
+
+  const handleFocusedTwo = useCallback(() => {
+    setIsFocusedTwo(true);
+    setIsFocusedOne(false);
+  }, []);
 
   const handleChangeAvatar = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -94,28 +106,35 @@ function SignUp() {
     <Container>
       <Background />
       <Content>
-        <AnimationContainer>
+        <AnimationContainer
+          isFocusedOne={isFocusedOne}
+          isFocusedTwo={isFocusedTwo}
+        >
           <img src={logoImg} alt="GoBarber" />
 
-          <div onChange={handleChangeType}>
-            <label htmlFor="rbutton">
+          <h1>Faça seu Cadastro</h1>
+
+          <div className="radio" onChange={handleChangeType}>
+            <label className="client" htmlFor="rbutton">
               <input
                 id="rbutton"
                 type="radio"
                 name="nametype"
                 value="client"
                 defaultChecked
+                onFocus={handleFocusedOne}
               />
-              <i>Client</i>
+              <i>I am Client</i>
             </label>
-            <label htmlFor="rbutton2">
+            <label className="provider" htmlFor="rbutton2">
               <input
                 id="rbutton2"
                 type="radio"
                 name="nametype"
                 value="provider"
+                onFocus={handleFocusedTwo}
               />
-              <i>Provider</i>
+              <i>I am Provider</i>
             </label>
           </div>
 
@@ -124,8 +143,6 @@ function SignUp() {
             ref={formRef}
             onSubmit={handleSubmit}
           >
-            <h1>Faça seu Cadastro</h1>
-
             <Input name="name" icon={FiUser} placeholder="Nome" />
             <Input name="email" icon={FiMail} placeholder="E-mail" />
 

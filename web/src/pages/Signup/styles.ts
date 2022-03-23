@@ -1,7 +1,12 @@
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { shade } from "polished";
 
 import signUpBackgroundImg from "../../assets/sign-up-background.png";
+
+interface AnimationContainerProps {
+  isFocusedOne: boolean;
+  isFocusedTwo: boolean;
+}
 
 export const Container = styled.div`
   height: 100vh;
@@ -30,7 +35,7 @@ const appearFromRight = keyframes`
 	}
 `;
 
-export const AnimationContainer = styled.div`
+export const AnimationContainer = styled.div<AnimationContainerProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,8 +43,52 @@ export const AnimationContainer = styled.div`
 
   animation: ${appearFromRight} 1s;
 
+  ${(props) =>
+    props.isFocusedOne &&
+    css`
+      .radio {
+        .client {
+          background: #ff9000;
+          border-radius: 5px;
+          color: #312e38;
+          transition: background 0.2s ease-in-out;
+          transition: color 0.2s ease-in-out;
+        }
+      }
+    `}
+
+  ${(props) =>
+    props.isFocusedTwo &&
+    css`
+      .radio {
+        .provider {
+          background: #ff9000;
+          border-radius: 5px;
+          color: #312e38;
+          transition: background 0.2s ease-in-out;
+          transition: color 0.2s ease-in-out;
+        }
+      }
+    `}
+
+  .radio {
+    margin-top: 20px;
+
+    input {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    label {
+      color: #f4ede8;
+      margin-left: 10px;
+      padding: 3px 5px;
+      font-family: "Roboto Slab", serif;
+    }
+  }
+
   form {
-    margin: 80px 0;
+    margin: 30px 0;
     width: 340px;
     text-align: center;
 
