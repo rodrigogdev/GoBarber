@@ -49,14 +49,6 @@ function SignIn() {
         await schema.validate(data, { abortEarly: false });
 
         await signIn({ email: data.email, password: data.password });
-
-        const user = localStorage.getItem("@GoBarber:user") as string;
-        const objUser: ObjectUser = JSON.parse(user);
-
-        // eslint-disable-next-line no-unused-expressions
-        objUser.user_type === "client"
-          ? navigate("/clientboard")
-          : navigate("/dashboard");
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErros(err as Yup.ValidationError);

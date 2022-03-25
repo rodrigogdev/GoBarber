@@ -9,8 +9,12 @@ interface RouteProps {
   redirectTo: string;
   children: JSX.Element;
 }
+interface UserRouteProps {
+  // eslint-disable-next-line react/require-default-props
+  children: JSX.Element;
+}
 
-export const PrivateRoute: React.FC<RouteProps> = ({
+const PrivateRoute: React.FC<RouteProps> = ({
   isPrivate = false,
   children,
   redirectTo,
@@ -19,3 +23,15 @@ export const PrivateRoute: React.FC<RouteProps> = ({
 
   return isPrivate === !!user ? children : <Navigate to={redirectTo} />;
 };
+
+const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
+  const { user } = useAuth();
+
+  return user.user_type === "client" ? (
+    <Navigate to="/clientboard" />
+  ) : (
+    children
+  );
+};
+
+export { PrivateRoute, UserRoute };

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { shade } from "polished";
 
 export const Container = styled.div``;
@@ -262,5 +262,70 @@ export const Calendar = styled.aside`
     background: #ff9000 !important;
     border-radius: 10px;
     color: #232129 !important;
+  }
+`;
+
+export const CreateAppointment = styled.div`
+  h1 {
+    margin-bottom: 8px;
+  }
+
+  span {
+    color: #ff9000;
+    line-height: 26px;
+    border-bottom: 1px solid #3e3b47;
+    display: block;
+    padding-bottom: 4px;
+    margin: 16px 0;
+  }
+
+  .period-container {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .period {
+    width: 188px;
+    margin: 0px 6px;
+  }
+
+  form {
+    .inactive {
+      display: flex;
+      align-items: center;
+      background: #3e3b47;
+      border-radius: 10px;
+      height: 60px;
+      margin: 8px 0;
+      border: none;
+      color: #fff;
+      width: 400px;
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 16px;
+        margin-left: 16px;
+      }
+    }
+
+    .active {
+      display: flex;
+      align-items: center;
+      background: #3e3b47;
+      border-radius: 10px;
+      height: 60px;
+      margin: 8px 0;
+      border: 2px solid #ff9000;
+      color: #fff;
+      width: 400px;
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 16px;
+        margin-left: 16px;
+      }
+    }
   }
 `;

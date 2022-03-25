@@ -1,10 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
 
 import { isToday, format, parseISO, isAfter } from "date-fns";
 import DayPicker, { DayModifiers } from "react-day-picker";
 import "react-day-picker/lib/style.css";
-import { FiClock, FiPower } from "react-icons/fi";
+import { FormHandles } from "@unform/core";
+import { FiCalendar, FiClock, FiMail, FiPower } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { Form } from "@unform/web";
 import {
   Container,
   Header,
@@ -15,6 +23,7 @@ import {
   NextAppointment,
   Section,
   Appointment,
+  CreateAppointment,
   Calendar,
 } from "./styles";
 import logoImg from "../../assets/logo.svg";
@@ -36,7 +45,15 @@ interface Appointment {
   };
 }
 
+interface Provider {
+  id: string;
+  name: string;
+  avatar_url: string;
+}
+
 const Clientboard: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
+
   const { user, signOut } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -46,6 +63,14 @@ const Clientboard: React.FC = () => {
   >([]);
 
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [providers, setProviders] = useState<Provider[]>([]);
+  const [isSelected, setIsSelected] = useState("");
+
+  console.log(monthAvailability);
+
+  const handleSubmit = useCallback(async () => {
+    console.log("teste");
+  }, []);
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
     if (modifiers.available && !modifiers.disabled) {
@@ -58,17 +83,24 @@ const Clientboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    api.get("/providers").then((response) => {
+      setProviders(response.data);
+    });
+  }, []);
+
+  useEffect(() => {
     api
-      .get(`/providers/${user.id}/month-availability`, {
+      .get(`/providers/${isSelected}/day-availability`, {
         params: {
           year: currentMonth.getFullYear(),
           month: currentMonth.getMonth() + 1,
+          day: currentMonth.getDay(),
         },
       })
       .then((response) => {
         setMonthAvailability(response.data);
       });
-  }, [currentMonth, user.id]);
+  }, [currentMonth, isSelected]);
 
   useEffect(() => {
     api
@@ -223,16 +255,43 @@ const Clientboard: React.FC = () => {
             ))}
           </Section>
         </Schedule>
-        <Calendar>
-          <DayPicker
-            fromMonth={new Date()}
-            disabledDays={[{ daysOfWeek: [0, 6] }, ...disabledDays]}
-            modifiers={{ available: { daysOfWeek: [1, 2, 3, 4, 5] } }}
-            onMonthChange={handleMonthChange}
-            onDayClick={handleDateChange}
-            selectedDays={selectedDate}
-          />
-        </Calendar>
+        <CreateAppointment>
+          <h1>Create new Appointment</h1>
+          <span>Choose a Barber</span>
+
+          {providers.length === 0 && <p>There is no barber available.</p>}
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            {providers.map((provider) => (
+              <button
+                type="button"
+                key={provider.id}
+                className={`${
+                  provider.id === isSelected ? "active" : "inactive"
+                }`}
+                onClick={() => setIsSelected(provider.id)}
+              >
+                <img src={provider.avatar_url} alt={provider.name} />
+                <strong>{provider.name}</strong>
+              </button>
+            ))}
+            <span>Choose a date</span>
+            <Calendar>
+              <DayPicker
+                fromMonth={new Date()}
+                disabledDays={[{ daysOfWeek: [0, 6] }, ...disabledDays]}
+                modifiers={{ available: { daysOfWeek: [1, 2, 3, 4, 5] } }}
+                onMonthChange={handleMonthChange}
+                onDayClick={handleDateChange}
+                selectedDays={selectedDate}
+              />
+            </Calendar>
+            <span>Available Time</span>
+            <div className="period-container">
+              <span className="period">am</span>
+              <span className="period">pm</span>
+            </div>
+          </Form>
+        </CreateAppointment>
       </Content>
     </Container>
   );

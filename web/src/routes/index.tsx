@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-import { PrivateRoute } from "./route";
+import { PrivateRoute, UserRoute } from "./route";
 
 import SignIn from "../pages/Signin";
 import SignUp from "../pages/Signup";
@@ -14,7 +14,14 @@ import Clientboard from "../pages/Clientboard";
 export const Routers: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<SignIn />} />
+      <Route
+        path="/"
+        element={
+          <PrivateRoute redirectTo="dashboard">
+            <SignIn />
+          </PrivateRoute>
+        }
+      />
 
       <Route
         path="/signup"
@@ -56,7 +63,9 @@ export const Routers: React.FC = () => {
         path="/dashboard"
         element={
           <PrivateRoute isPrivate redirectTo="/">
-            <Dashboard />
+            <UserRoute>
+              <Dashboard />
+            </UserRoute>
           </PrivateRoute>
         }
       />

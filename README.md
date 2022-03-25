@@ -8,7 +8,7 @@
 
 ## :barber: The Project
 
-This is an application to profissional hairdressers to manage their day of work, where their customers can schedule appointments, so they can see in his dashboard, all the customers they will serve that day.
+This is an application to profissional barbers to manage their day of work, where their customers can schedule appointments, so they can see in his dashboard, all the customers they will serve that day.
 
 ## :fire: About the Application
 
