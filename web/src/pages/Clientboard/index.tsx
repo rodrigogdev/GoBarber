@@ -10,7 +10,7 @@ import { isToday, format, parseISO, isAfter } from "date-fns";
 import DayPicker, { DayModifiers } from "react-day-picker";
 import "react-day-picker/lib/style.css";
 import { FormHandles } from "@unform/core";
-import { FiCalendar, FiClock, FiMail, FiPower } from "react-icons/fi";
+import { FiClock, FiPower } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { Form } from "@unform/web";
 import {
@@ -32,6 +32,7 @@ import api from "../../services/api";
 
 interface MonthAvailabilityItem {
   day: number;
+  hour: number;
   available: boolean;
 }
 
@@ -66,6 +67,7 @@ const Clientboard: React.FC = () => {
   const [providers, setProviders] = useState<Provider[]>([]);
   const [isSelected, setIsSelected] = useState("");
 
+  console.log(selectedDate);
   console.log(monthAvailability);
 
   const handleSubmit = useCallback(async () => {
@@ -92,15 +94,15 @@ const Clientboard: React.FC = () => {
     api
       .get(`/providers/${isSelected}/day-availability`, {
         params: {
-          year: currentMonth.getFullYear(),
-          month: currentMonth.getMonth() + 1,
-          day: currentMonth.getDay(),
+          year: selectedDate.getFullYear(),
+          month: selectedDate.getMonth() + 1,
+          day: selectedDate.getDate(),
         },
       })
       .then((response) => {
         setMonthAvailability(response.data);
       });
-  }, [currentMonth, isSelected]);
+  }, [selectedDate, isSelected]);
 
   useEffect(() => {
     api
@@ -280,7 +282,6 @@ const Clientboard: React.FC = () => {
                 fromMonth={new Date()}
                 disabledDays={[{ daysOfWeek: [0, 6] }, ...disabledDays]}
                 modifiers={{ available: { daysOfWeek: [1, 2, 3, 4, 5] } }}
-                onMonthChange={handleMonthChange}
                 onDayClick={handleDateChange}
                 selectedDays={selectedDate}
               />
@@ -290,6 +291,11 @@ const Clientboard: React.FC = () => {
               <span className="period">am</span>
               <span className="period">pm</span>
             </div>
+            {monthAvailability.map((date) => (
+              <button type="button" key={date.hour}>
+                <strong>{date.hour}</strong>
+              </button>
+            ))}
           </Form>
         </CreateAppointment>
       </Content>
