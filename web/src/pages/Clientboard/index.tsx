@@ -6,12 +6,20 @@ import React, {
   useCallback,
 } from "react";
 
-import { isToday, format, parseISO, isAfter } from "date-fns";
+import {
+  isToday,
+  format,
+  parseISO,
+  isAfter,
+  getYear,
+  getMonth,
+  getDate,
+} from "date-fns";
 import DayPicker, { DayModifiers } from "react-day-picker";
 import "react-day-picker/lib/style.css";
 import { FormHandles } from "@unform/core";
 import { FiClock, FiPower } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Form } from "@unform/web";
 import {
   Container,
@@ -30,6 +38,7 @@ import logoImg from "../../assets/logo.svg";
 import { useAuth } from "../../hooks/Auth";
 import api from "../../services/api";
 import Button from "../../components/Button";
+import { useToast } from "../../hooks/Toast";
 
 interface MonthAvailabilityItem {
   day: number;
@@ -53,8 +62,14 @@ interface Provider {
   avatar_url: string;
 }
 
+interface Postdata {
+  provider_Id: string;
+  date: Date;
+}
+
 const Clientboard: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const { addToast } = useToast();
 
   const { user, signOut } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -67,23 +82,47 @@ const Clientboard: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [providers, setProviders] = useState<Provider[]>([]);
   const [isSelected, setIsSelected] = useState("");
+  const [loading, setLoading] = useState(false);
   const [isClicked, setIsClicked] = useState<number>();
 
-  console.log(selectedDate);
-  console.log(monthAvailability);
-
   const handleSubmit = useCallback(async () => {
-    console.log("teste");
-  }, []);
+    const data: Postdata = {
+      // eslint-disable-next-line camelcase
+      provider_Id: isSelected,
+      date: new Date(
+        getYear(selectedDate),
+        getMonth(selectedDate),
+        getDate(selectedDate),
+        isClicked,
+      ),
+    };
+    // eslint-disable-next-line camelcase
+    try {
+      setLoading(true);
+      await api.post("appointments", data);
+
+      addToast({
+        type: "success",
+        title: "Cadastro realizado!",
+        description: "Você já pode fazer seu Logon",
+      });
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      return;
+    }
+
+    addToast({
+      type: "error",
+      title: "Erro no cadastro",
+      description: "Ocorreu um erro ao fazer cadastro, tente novamente.",
+    });
+  }, [isClicked, isSelected, selectedDate]);
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
     if (modifiers.available && !modifiers.disabled) {
       setSelectedDate(day);
     }
-  }, []);
-
-  const handleMonthChange = useCallback((month: Date) => {
-    setCurrentMonth(month);
   }, []);
 
   useEffect(() => {
@@ -307,7 +346,7 @@ const Clientboard: React.FC = () => {
               </button>
             ))}
             <div className="submit-button">
-              <Button style={{ width: 350 }} type="submit">
+              <Button style={{ width: 350 }} type="submit" loading={loading}>
                 Register Hour
               </Button>
             </div>
