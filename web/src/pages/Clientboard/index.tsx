@@ -29,6 +29,7 @@ import {
 import logoImg from "../../assets/logo.svg";
 import { useAuth } from "../../hooks/Auth";
 import api from "../../services/api";
+import Button from "../../components/Button";
 
 interface MonthAvailabilityItem {
   day: number;
@@ -66,6 +67,7 @@ const Clientboard: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [providers, setProviders] = useState<Provider[]>([]);
   const [isSelected, setIsSelected] = useState("");
+  const [isClicked, setIsClicked] = useState<number>();
 
   console.log(selectedDate);
   console.log(monthAvailability);
@@ -292,10 +294,23 @@ const Clientboard: React.FC = () => {
               <span className="period">pm</span>
             </div>
             {monthAvailability.map((date) => (
-              <button type="button" key={date.hour}>
+              <button
+                type="button"
+                key={date.hour}
+                disabled={!date.available}
+                className={`${
+                  date.hour === isClicked ? "clicked" : "not-clicked"
+                }`}
+                onClick={() => setIsClicked(date.hour)}
+              >
                 <strong>{date.hour}</strong>
               </button>
             ))}
+            <div className="submit-button">
+              <Button style={{ width: 350 }} type="submit">
+                Register Hour
+              </Button>
+            </div>
           </Form>
         </CreateAppointment>
       </Content>

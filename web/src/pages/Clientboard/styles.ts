@@ -327,5 +327,48 @@ export const CreateAppointment = styled.div`
         margin-left: 16px;
       }
     }
+
+    .not-clicked:disabled {
+      color: #3e3b47;
+      background: #312e38;
+      border: none;
+      width: 36px;
+      height: 30px;
+      margin: 8px 2px;
+      border-radius: 6px;
+      cursor: default;
+    }
+    .clicked:disabled {
+      color: #3e3b47;
+      background: #312e38;
+      border: none;
+      width: 36px;
+      height: 30px;
+      margin: 8px 2px;
+      border-radius: 6px;
+      cursor: default;
+    }
+    .not-clicked {
+      color: #fff;
+      background: #3e3b47;
+      border: none;
+      width: 36px;
+      height: 30px;
+      margin: 8px 2px;
+      border-radius: 6px;
+    }
+    .clicked {
+      color: #3e3b47;
+      background: #ff9000;
+      border: none;
+      width: 36px;
+      height: 30px;
+      margin: 8px 2px;
+      border-radius: 6px;
+    }
+    .submit-button {
+      display: flex;
+      justify-content: center;
+    }
   }
 `;
