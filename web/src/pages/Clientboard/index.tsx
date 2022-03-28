@@ -85,6 +85,13 @@ const Clientboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isClicked, setIsClicked] = useState<number>();
 
+  const goToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   const handleSubmit = useCallback(async () => {
     const data: Postdata = {
       // eslint-disable-next-line camelcase
@@ -103,20 +110,19 @@ const Clientboard: React.FC = () => {
 
       addToast({
         type: "success",
-        title: "Cadastro realizado!",
-        description: "Você já pode fazer seu Logon",
+        title: "Appointment registered!",
+        description: "Your appointment was sucessfully registered.",
       });
       setLoading(false);
+      goToTop();
     } catch (err) {
       setLoading(false);
-      return;
+      addToast({
+        type: "error",
+        title: "Error during registration",
+        description: "There is an error trying to register your appointment.",
+      });
     }
-
-    addToast({
-      type: "error",
-      title: "Erro no cadastro",
-      description: "Ocorreu um erro ao fazer cadastro, tente novamente.",
-    });
   }, [isClicked, isSelected, selectedDate]);
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
@@ -227,36 +233,14 @@ const Clientboard: React.FC = () => {
       </Header>
       <Content>
         <Schedule>
-          <h1>Your next appointments</h1>
+          <h1>Appointments</h1>
           <p>
-            {isToday(selectedDate) && <span>Today</span>}
-            <span>{selectedDateAsText}</span>
-            <span>{selectedWeekDay}</span>
+            <span>Your Next Appointment</span>
           </p>
 
-          {isToday(selectedDate) && nextAppointment && (
-            <NextAppointment>
-              <strong>Next Appointment</strong>
-              <div>
-                <img
-                  src={nextAppointment.user.avatar_url}
-                  alt={nextAppointment.user.name}
-                />
-
-                <strong>{nextAppointment.user.name}</strong>
-                <span>
-                  <FiClock />
-                  {nextAppointment.hourFormatted}
-                </span>
-              </div>
-            </NextAppointment>
-          )}
-
           <Section>
-            <strong>Morning</strong>
-
             {morningAppointments.length === 0 && (
-              <p>There is no appointment on this period.</p>
+              <p>You have no appointment registered.</p>
             )}
 
             {morningAppointments.map((appointment) => (
@@ -327,7 +311,7 @@ const Clientboard: React.FC = () => {
                 selectedDays={selectedDate}
               />
             </Calendar>
-            <span>Available Time</span>
+            <span>Available Time ( Hour )</span>
             <div className="period-container">
               <span className="period">am</span>
               <span className="period">pm</span>
