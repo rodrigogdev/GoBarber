@@ -1,5 +1,4 @@
 import { inject, injectable } from "tsyringe";
-import ICacheProvider from "@shared/container/providers/CacheProvider/models/ICacheProvider";
 import { classToClass } from "class-transformer";
 import IAppointmentsRepository from "../repositories/IAppointmentsRepository";
 
@@ -13,10 +12,7 @@ interface IRequest {
 class ListClientAppointmentService {
   constructor(
     @inject("AppointmentsRepository")
-    private appointmentsRepository: IAppointmentsRepository,
-
-    @inject("CacheProvider")
-    private cacheProvider: ICacheProvider
+    private appointmentsRepository: IAppointmentsRepository
   ) {}
 
   public async execute({ user_id }: IRequest): Promise<Appointments[]> {

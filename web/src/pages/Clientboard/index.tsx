@@ -6,20 +6,12 @@ import React, {
   useCallback,
 } from "react";
 
-import {
-  isToday,
-  format,
-  parseISO,
-  isAfter,
-  getYear,
-  getMonth,
-  getDate,
-} from "date-fns";
+import { format, parseISO, getYear, getMonth, getDate } from "date-fns";
 import DayPicker, { DayModifiers } from "react-day-picker";
 import "react-day-picker/lib/style.css";
 import { FormHandles } from "@unform/core";
-import { FiClock, FiPower } from "react-icons/fi";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { FiCalendar, FiClock, FiPower } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import { Form } from "@unform/web";
 import {
   Container,
@@ -28,7 +20,6 @@ import {
   Profile,
   Content,
   Schedule,
-  NextAppointment,
   Section,
   Appointment,
   CreateAppointment,
@@ -49,8 +40,9 @@ interface MonthAvailabilityItem {
 interface Appointment {
   id: string;
   date: string;
+  dateFormatted: string;
   hourFormatted: string;
-  user: {
+  provider: {
     name: string;
     avatar_url: string;
   };
@@ -73,7 +65,6 @@ const Clientboard: React.FC = () => {
 
   const { user, signOut } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const [monthAvailability, setMonthAvailability] = useState<
     MonthAvailabilityItem[]
@@ -92,6 +83,20 @@ const Clientboard: React.FC = () => {
     });
   };
 
+  const loadAppointments = useCallback(async () => {
+    api.get<Appointment[]>("/appointments/client").then((response) => {
+      const formattedAppointments = response.data.map((appointment) => {
+        return {
+          ...appointment,
+          dateFormatted: format(parseISO(appointment.date), "MM/dd"),
+          hourFormatted: format(parseISO(appointment.date), "HH:mm"),
+        };
+      });
+
+      setAppointments(formattedAppointments);
+    });
+  }, []);
+
   const handleSubmit = useCallback(async () => {
     const data: Postdata = {
       // eslint-disable-next-line camelcase
@@ -106,7 +111,9 @@ const Clientboard: React.FC = () => {
     // eslint-disable-next-line camelcase
     try {
       setLoading(true);
-      await api.post("appointments", data);
+      await api.post("appointments", data).then(() => {
+        loadAppointments();
+      });
 
       addToast({
         type: "success",
@@ -123,7 +130,7 @@ const Clientboard: React.FC = () => {
         description: "There is an error trying to register your appointment.",
       });
     }
-  }, [isClicked, isSelected, selectedDate]);
+  }, [isClicked, isSelected, selectedDate, addToast, loadAppointments]);
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
     if (modifiers.available && !modifiers.disabled) {
@@ -152,27 +159,12 @@ const Clientboard: React.FC = () => {
   }, [selectedDate, isSelected]);
 
   useEffect(() => {
-    api
-      .get<Appointment[]>("/appointments/me", {
-        params: {
-          year: selectedDate.getFullYear(),
-          month: selectedDate.getMonth() + 1,
-          day: selectedDate.getDate(),
-        },
-      })
-      .then((response) => {
-        const formattedAppointments = response.data.map((appointment) => {
-          return {
-            ...appointment,
-            hourFormatted: format(parseISO(appointment.date), "HH:mm"),
-          };
-        });
-
-        setAppointments(formattedAppointments);
-      });
-  }, [selectedDate]);
+    loadAppointments();
+  }, [loadAppointments]);
 
   const disabledDays = useMemo(() => {
+    const currentMonth = new Date();
+
     const dates = monthAvailability
       .filter((monthDay) => monthDay.available === false)
       .map((monthDay) => {
@@ -181,33 +173,7 @@ const Clientboard: React.FC = () => {
         return new Date(year, month, monthDay.day);
       });
     return dates;
-  }, [currentMonth, monthAvailability]);
-
-  const selectedDateAsText = useMemo(() => {
-    return format(selectedDate, "MMMM dd");
-  }, [selectedDate]);
-
-  const selectedWeekDay = useMemo(() => {
-    return format(selectedDate, "cccc");
-  }, [selectedDate]);
-
-  const morningAppointments = useMemo(() => {
-    return appointments.filter((appointment) => {
-      return parseISO(appointment.date).getHours() < 12;
-    });
-  }, [appointments]);
-
-  const afternoonAppointments = useMemo(() => {
-    return appointments.filter((appointment) => {
-      return parseISO(appointment.date).getHours() >= 12;
-    });
-  }, [appointments]);
-
-  const nextAppointment = useMemo(() => {
-    return appointments.find((appointment) =>
-      isAfter(parseISO(appointment.date), new Date()),
-    );
-  }, [appointments]);
+  }, [monthAvailability]);
 
   return (
     <Container>
@@ -239,44 +205,28 @@ const Clientboard: React.FC = () => {
           </p>
 
           <Section>
-            {morningAppointments.length === 0 && (
+            {appointments.length === 0 && (
               <p>You have no appointment registered.</p>
             )}
 
-            {morningAppointments.map((appointment) => (
+            {appointments.map((appointment) => (
               <Appointment key={appointment.id}>
-                <span>
-                  <FiClock />
-                  {appointment.hourFormatted}
-                </span>
+                <section>
+                  <span>
+                    <FiCalendar />
+                    {appointment.dateFormatted}
+                  </span>
+                  <span>
+                    <FiClock />
+                    {appointment.hourFormatted}
+                  </span>
+                </section>
                 <div>
                   <img
-                    src={appointment.user.avatar_url}
-                    alt={appointment.user.name}
+                    src={appointment.provider.avatar_url}
+                    alt={appointment.provider.name}
                   />
-                  <strong>{appointment.user.name}</strong>
-                </div>
-              </Appointment>
-            ))}
-
-            <strong>Afternoon</strong>
-
-            {afternoonAppointments.length === 0 && (
-              <p>There is no appointment on this period.</p>
-            )}
-
-            {afternoonAppointments.map((appointment) => (
-              <Appointment key={appointment.id}>
-                <span>
-                  <FiClock />
-                  {appointment.hourFormatted}
-                </span>
-                <div>
-                  <img
-                    src={appointment.user.avatar_url}
-                    alt={appointment.user.name}
-                  />
-                  <strong>{appointment.user.name}</strong>
+                  <strong>{appointment.provider.name}</strong>
                 </div>
               </Appointment>
             ))}
