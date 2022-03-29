@@ -3,6 +3,7 @@ import ICreateUserDTO from "@modules/users/dtos/ICreateUserDTO";
 import User from "@modules/users/infra/typeorm/entities/User";
 import { nanoid } from "nanoid";
 import IFindAllProvidersDTO from "@modules/users/dtos/IFindAllProvidersDTO";
+import { classToClass } from "class-transformer";
 
 class FakeUsersRepository implements IUsersRepository {
   private users: User[] = [];
@@ -37,7 +38,7 @@ class FakeUsersRepository implements IUsersRepository {
 
     this.users.push(user);
 
-    return user;
+    return classToClass(user);
   }
 
   public async save(user: User): Promise<User> {

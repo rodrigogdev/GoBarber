@@ -10,6 +10,14 @@ import IFindAllinDayProviderDTO from "@modules/appointments/dtos/IFindAllinDayPr
 class FakeAppointmentsRepository implements IAppointmentsRepository {
   private appointments: Appointments[] = [];
 
+  public async findAllFromClient(user_id: string): Promise<Appointments[]> {
+    const dataAppointments = this.appointments.filter((appointment) => {
+      return appointment.user_id === user_id;
+    });
+
+    return dataAppointments;
+  }
+
   public async findByDate(
     date: Date,
     provider_Id: string
