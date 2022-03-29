@@ -23,16 +23,16 @@ describe("UpdateUSerAvatar", () => {
       name: "John Doe",
       email: "johndoe@example.com",
       password: "123456",
-      avatar: "avatar.jpg",
+      avatar: "avatarj.jpg",
       user_type: "client",
     });
 
-    await updateUserAvatar.execute({
+    const updatedUser = await updateUserAvatar.execute({
       user_id: user.id,
       avatarFileName: "avatar2.jpg",
     });
 
-    expect(user.avatar).toBe("avatar2.jpg");
+    expect(updatedUser.avatar).toBe("avatar2.jpg");
   });
 
   it("Shouldn't be able to update avatar from a unexisting user", async () => {
@@ -55,12 +55,12 @@ describe("UpdateUSerAvatar", () => {
       user_type: "client",
     });
 
-    await updateUserAvatar.execute({
+    const updatedUser = await updateUserAvatar.execute({
       user_id: user.id,
       avatarFileName: "new-avatar.jpg",
     });
 
     expect(deleteFile).toHaveBeenCalledWith("avatar.jpg");
-    expect(user.avatar).toBe("new-avatar.jpg");
+    expect(updatedUser.avatar).toBe("new-avatar.jpg");
   });
 });
