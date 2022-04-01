@@ -1,13 +1,34 @@
-version: "3.1"
+version: "3.8"
 
 services:
+  app:
+    build: .
+    container_name: "api-gobarber"
+    command: sh -c "npm run typeorm migration:run && npm run dev:server"
+    ports:
+      - 5000:5000
+    volumes:
+      - .:usr/app
+    links:
+      - gobarber_db
+      - mongoDB
+      - redis
+    depends_on:
+      - gobarber_db
+      - mongoDB
+      - redis
+    environment:
+      DB_HOST: ${DATABASE_HOST}
+      DB_USER: ${DATABASE_USER}
+      DB_PASS: ${DATABASE_PASSWORD}
+      DB_NAME: ${DATABASE_NAME}
+
   gobarber_db:
     image: postgres
     container_name: gostack_gobarber
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: docker
-      POSTGRES_DB: gostack_gobarber
+    environment: POSTGRES_USER=${POSTGRES_USER}
+      POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
 
