@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "run": "ts-node-dev --inspect --transpileOnly --ignore node_modules src/shared/infra/http/server.ts",
-    "dev:server": "ts-node-dev -r tsconfig-paths/register --transpile-only --ignore-watch node_modules src/shared/infra/http/server.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only --ignore-watch node_modules src/shared/infra/http/server.ts",
+    "start": "node src/shared/infra/http/server.ts",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
     "typeorm:create": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:create -n AddUserTypeToUsers -d src/shared/infra/typeorm/migrations"
   },
