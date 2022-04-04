@@ -33,8 +33,8 @@ function ForgotPassword() {
 
         const schema = Yup.object().shape({
           email: Yup.string()
-            .required("E-mail required")
-            .email("Type an valid email"),
+            .required("E-mail obrigatório")
+            .email("Digite um e-mail válido"),
         });
 
         await schema.validate(data, { abortEarly: false });
