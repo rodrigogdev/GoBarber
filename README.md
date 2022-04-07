@@ -6,7 +6,7 @@
 
 </div>
 
-## :barber: The Project
+## :barber: The Project - NEW BRANCH
 
 This is an application to profissional barbers to manage their day of work, where their customers can schedule appointments, so they can see in his dashboard, all the customers they will serve that day.
 

@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from "react";
 import { FiLogIn, FiMail, FiLock } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Form } from "@unform/web";
 import * as Yup from "yup";
 
@@ -19,20 +19,11 @@ interface SignInFormData {
   password: string;
 }
 
-interface ObjectUser {
-  id: string;
-  name: string;
-  email: string;
-  avatar_url: string;
-  user_type: string;
-}
-
 function SignIn() {
   const formRef = useRef<FormHandles>(null);
 
   const { signIn } = useAuth();
   const { addToast } = useToast();
-  const navigate = useNavigate();
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
@@ -65,7 +56,7 @@ function SignIn() {
         });
       }
     },
-    [signIn, addToast, navigate],
+    [addToast, signIn],
   );
 
   return (
